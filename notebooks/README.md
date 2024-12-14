@@ -1,61 +1,156 @@
-# 1. Exploratory Data Analysis (EDA)
 
-## 1.1 Data understanding
+# 📰 Exploratory Data Analysis (EDA) on News Dataset
 
-- Before performing any analysis, it's crucial to understand the structure and content of the data. This step involves loading the data, inspecting the first few rows, and identifying key features.
-  - `import pandas as pd`
-  - `file_path = 'Path_to_the_csv_file'`
-  - `df = pd.read_csv(file_path)`
-  - **`print(df.head())`** -*This line displays the first few rows.*
+This repository contains an in-depth **Exploratory Data Analysis (EDA)** of a news dataset. The project covers various analyses such as descriptive statistics, sentiment analysis, time series analysis, and publisher contributions. The goal is to uncover insights about headline characteristics, publication trends, and sentiments.
 
-## 1.2 Descriptive statistics
+---
 
-- Descriptive statistics provide a summary of the central tendency, dispersion, and shape of the data distribution. For text data, this might include statistics like the length of headlines, the count of articles per publisher, and the distribution of publication dates.
-  - *Claculate headline lengths,*
-    - `df['headline_length'] = df['headline'].apply(len)`
-  - *Basic statistics for headline lengths*
-    - `headline_stats = df['headline_length'].describe()`
-  - *Count the number of articles per publisher,*
-    - `publisher_counts = df['publisher'].value_counts()`
-  - *Analyze the publication dates,*
-    - `df['date'] = pd.to_datetime(df['date'])`
-    - `df['date'].describe()`
+## 📋 Table of Contents
 
-## 1.3 Text Analysis / Sentiment analysis
+1. [📊 Data Understanding](#-data-understanding)  
+2. [📈 Descriptive Statistics](#-descriptive-statistics)  
+3. [💬 Text Analysis / Sentiment Analysis](#-text-analysis--sentiment-analysis)  
+4. [📅 Time Series Analysis (TSA)](#-time-series-analysis-tsa)  
+5. [📰 Publisher Analysis](#-publisher-analysis)  
+6. [🚀 How to Run the Notebook](#-how-to-run-the-notebook)  
+7. [📜 License](#-license)  
 
-- Sentiment analysis aims to determine the sentiment behind the text, whether positive, negative, or neutral. Topic modeling identifies common topics or themes within the text.
-  - *Perform sentiment analysis*
-    - `from textblob import TextBlob`
-    - `df['sentiment'] = df['headline'].apply(lambda x: TextBlob(x).sentiment.polarity)`
-  - *Display sentiment statistics*
-    - `df['sentiment'].describe()`
+---
 
-## 1.4 Time series analysis
+## 📊 Data Understanding
 
-- Time series analysis examines the data points indexed in time order. For this dataset, it involves analyzing publication trends over time, which can reveal insights into the frequency of articles during specific events.
-  - *Resample data by day and count the number of articles*
-    - `import matplotlib.pyplot as plt`
-    - `df.set_index('date', inplace=True)`
-    - `daily_articles = df['headline'].resample('D').count()`
-  - *Plot the number of articles over time*
-    - `plt.figure(figsize=(10, 5))`
-    - `daily_articles.plot()`
-    - `plt.title("Number of Articles Published Over Time")`
-    - `plt.xlabel("Date")`
-    - `plt.ylabel("Number of Articles")`
-    - `plt.show()`
-- *Detailed TSA is shown at `./TSA/TAS_headline.ipynb`*
+Before starting the analysis, we need to understand the **structure and content** of the dataset. This involves loading the data and inspecting the first few rows to identify key features.
 
-## 1.5 Publisher analysis
+### 🛠️ Load Data
 
-- Publisher analysis involves examining the contributions of different publishers to the dataset. This can help identify which publishers are most active and the nature of the news they report.
-  - Analyze the contribution of each publisher
-    - `publisher_contribution = df['publisher'].value_counts(normalize=True) * 100`
-  - Display the top contributors
-    - `publisher_contribution.head()`
+```python
+import pandas as pd
 
-## How to Run the Notebook
+# Path to the CSV file
+file_path = 'Path_to_the_csv_file'
 
-1. Ensure all required libraries are installed. Use `pip install -r requirements.txt` if a `requirements.txt` file is provided.
-2. Open the Jupyter Notebook.
-3. Run each cell sequentially to perform the analysis.
+# Load the dataset
+df = pd.read_csv(file_path)
+
+# Display the first few rows
+print(df.head())
+```
+
+---
+
+## 📈 Descriptive Statistics
+
+Descriptive statistics summarize the **central tendency**, **dispersion**, and **distribution** of the dataset. Key steps include:
+
+- 📏 **Headline Length Distribution**
+- 📰 **Article Count per Publisher**
+- 📆 **Publication Date Analysis**
+
+### 📝 Headline Length Distribution
+
+```python
+# Calculate headline lengths
+df['headline_length'] = df['headline'].apply(len)
+
+# Display basic statistics for headline lengths
+headline_stats = df['headline_length'].describe()
+print(headline_stats)
+```
+
+### 📰 Count Articles per Publisher
+
+```python
+# Count articles by publisher
+publisher_counts = df['publisher'].value_counts()
+print(publisher_counts)
+```
+
+### 📆 Publication Dates
+
+```python
+# Convert the 'date' column to datetime
+df['date'] = pd.to_datetime(df['date'])
+
+# Display publication date statistics
+print(df['date'].describe())
+```
+
+---
+
+## 💬 Text Analysis / Sentiment Analysis
+
+Sentiment analysis helps uncover whether the sentiment behind a headline is **positive**, **negative**, or **neutral**. This section calculates a polarity score for each headline.
+
+### ✍️ Perform Sentiment Analysis
+
+```python
+from textblob import TextBlob
+
+# Apply sentiment analysis
+df['sentiment'] = df['headline'].apply(lambda x: TextBlob(x).sentiment.polarity)
+
+# Display sentiment statistics
+print(df['sentiment'].describe())
+```
+
+---
+
+## 📅 Time Series Analysis (TSA)
+
+**Time Series Analysis** examines publication trends over time. Insights into the frequency of articles during specific periods or events can be derived.
+
+### 📆 Resample Data by Day & Plot
+
+```python
+import matplotlib.pyplot as plt
+
+# Set date as the index
+df.set_index('date', inplace=True)
+
+# Resample data by day and count articles
+daily_articles = df['headline'].resample('D').count()
+
+# Plot the number of articles over time
+plt.figure(figsize=(10, 5))
+daily_articles.plot()
+plt.title("📅 Number of Articles Published Over Time")
+plt.xlabel("Date")
+plt.ylabel("Number of Articles")
+plt.show()
+```
+
+🛠️ **Detailed TSA**: Refer to `./TSA/TAS_headline.ipynb` for advanced analysis.
+
+---
+
+## 📰 Publisher Analysis
+
+This section explores the contributions of different publishers to identify the most active contributors and their impact on the dataset.
+
+### 📊 Contribution Analysis
+
+```python
+# Calculate the percentage contribution of each publisher
+publisher_contribution = df['publisher'].value_counts(normalize=True) * 100
+
+# Display top contributors
+print(publisher_contribution.head())
+```
+
+---
+
+## 🚀 How to Run the Notebook
+
+Follow these steps to run the analysis:
+
+1. **Install Dependencies**  
+   Ensure all required libraries are installed:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Open the Jupyter Notebook**  
+   Open the notebook in your preferred environment (e.g., JupyterLab or VS Code).
+
+3. **Run Each Cell Sequentially**  
+   Execute each cell in the notebook to perform the analysis.
